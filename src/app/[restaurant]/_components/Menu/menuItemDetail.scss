@@ -1,0 +1,144 @@
+.menuItemDetail {
+    width: 100%;
+    max-width: 500px;
+    background: var(--theme-bg);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+    .imageHeader {
+        height: 250px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .imageBlur {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-size: cover;
+            background-position: center;
+            filter: blur(15px) brightness(0.7);
+            transform: scale(1.1);
+        }
+
+        .mainImage {
+            position: relative;
+            max-height: 90%;
+            max-width: 90%;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .closeBtn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+            border: none;
+            color: white;
+            &:hover {
+                background: rgba(255,255,255,0.4);
+            }
+        }
+    }
+
+    .content {
+        padding: 24px;
+
+        .titleRow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+
+            .name {
+                margin: 0;
+                font-size: 1.5rem;
+                font-weight: 700;
+            }
+
+            .vegBadge {
+                &.veg { color: #15803d; }
+                &.non-veg { color: #b91c1c; }
+                &.contains-egg { color: #b45309; }
+            }
+        }
+
+        .category {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--theme-text-light);
+            margin-bottom: 12px;
+        }
+
+        .price {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--theme-primary);
+            margin-bottom: 16px;
+        }
+
+        .description {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--theme-text);
+            margin-bottom: 24px;
+        }
+
+        .nutritionalSection {
+            background: var(--theme-bg-alt, #f9fafb);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+
+            h3 {
+                margin: 0 0 12px 0;
+                font-size: 1rem;
+                font-weight: 600;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+
+                .stat {
+                    display: flex;
+                    flex-direction: column;
+                    span { font-size: 0.8rem; color: var(--theme-text-light); }
+                    strong { font-size: 0.95rem; }
+                }
+            }
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--theme-border);
+
+            .qtyControls {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                background: var(--theme-bg-alt);
+                padding: 4px;
+                border-radius: 10px;
+
+                .qty {
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    min-width: 24px;
+                    text-align: center;
+                }
+            }
+        }
+    }
+}

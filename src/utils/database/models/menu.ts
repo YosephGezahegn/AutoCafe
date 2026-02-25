@@ -1,0 +1,70 @@
+import mongoose, { type HydratedDocument } from "mongoose";
+
+import { Accounts, type TAccount } from "./account";
+
+const accountCache = new Map<string, TAccount | null>();
+
+const FoodType = ["spicy", "extra-spicy", "sweet"] as const;
+const Veg = ["veg", "non-veg", "contains-egg"] as const;
+
+const MenuSchema = new mongoose.Schema<TMenu>(
+	{
+		name: { type: String, trim: true, unique: true, required: true, sparse: true, index: { unique: true } },
+		restaurantID: { type: String, trim: true, lowercase: true, required: true },
+		description: { type: String, trim: true },
+		category: { type: String, trim: true, lowercase: true },
+		price: { type: Number, trim: true, required: true },
+		taxPercent: { type: Number, trim: true, required: true },
+		foodType: { type: String, trim: true, lowercase: true, enum: FoodType },
+		veg: { type: String, trim: true, lowercase: true, required: true, enum: Veg },
+		image: { type: String, trim: true },
+		hidden: { type: Boolean, default: true },
+		nutritionalValue: {
+			calories: { type: Number },
+			protein: { type: Number },
+			carbs: { type: Number },
+			fats: { type: Number },
+		},
+	},
+	{ timestamps: true },
+);
+
+MenuSchema.pre("save", async function () {
+	// Clear invalid foodType values (e.g. "none", empty string)
+	if (this.foodType && !FoodType.includes(this.foodType as (typeof FoodType)[number])) {
+		this.foodType = undefined as any;
+	}
+
+	let account = accountCache.get(this.restaurantID);
+	if (!account) {
+		account = await Accounts.findOne<TAccount>({ username: this.restaurantID }).populate("profile");
+		if (account) accountCache.set(this.restaurantID, account);
+		else throw new Error(`The associated account with username '${this.restaurantID}' does not exist.`);
+	}
+});
+MenuSchema.post("save", async function () {
+	await Accounts.updateOne({ username: this.restaurantID }, { $addToSet: { menus: this._id } });
+});
+
+export const Menus = mongoose.models?.menus ?? mongoose.model<TMenu>("menus", MenuSchema);
+export type TMenu = HydratedDocument<{
+	name: string;
+	restaurantID: string;
+	description: string;
+	category: string;
+	price: number;
+	taxPercent: number;
+	foodType: TFoodType;
+	veg: TVeg;
+	image: string;
+	hidden: boolean;
+	nutritionalValue?: {
+		calories?: number;
+		protein?: number;
+		carbs?: number;
+		fats?: number;
+	};
+}>;
+
+export type TFoodType = (typeof FoodType)[number];
+export type TVeg = (typeof Veg)[number];
