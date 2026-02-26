@@ -1,9 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { Icon } from "xtreme-ui";
 import { useLanguage } from "#components/context/LanguageContext";
 import { useRestaurant } from "#components/context/useContext";
+import Modal from "#components/layout/Modal";
 import type { TMenu } from "#utils/database/models/menu";
 
 import ContactPage from "./Menu/ContactPage";
@@ -16,6 +20,9 @@ type TMenuCustom = TMenu & { quantity: number };
 export default function PageContainer() {
 	const searchParams = useSearchParams();
 	const tab = searchParams.get("tab");
+	const session = useSession();
+	const { t } = useLanguage();
+	const { restaurant } = useRestaurant();
 
 	const [selectedProducts, setSelectedProducts] = useState<Array<TMenuCustom>>([]);
 
@@ -37,12 +44,43 @@ export default function PageContainer() {
 	}, []);
 
 	const resetSelectedProducts = useCallback(() => setSelectedProducts([]), []);
-	const { restaurant } = useRestaurant();
-	const { t } = useLanguage();
 
 	const tableParam = searchParams.get("table");
 	const tableData = restaurant?.tables?.find((t) => t.username === tableParam);
 	const [claimError, setClaimError] = useState("");
+
+	// Call Staff state
+	const [callStaffOpen, setCallStaffOpen] = useState(false);
+	const [callStaffLoading, setCallStaffLoading] = useState(false);
+	const [callStaffCooldown, setCallStaffCooldown] = useState(false);
+
+	const showOrderButton = restaurant?.tables?.some((t) => t.username === tableParam && t.isActive);
+	const eligibleToOrder = showOrderButton && (!session.data || session.data?.role === "customer");
+
+	const handleCallStaff = async (reason: string) => {
+		if (callStaffCooldown) return;
+		setCallStaffLoading(true);
+		try {
+			const res = await fetch("/api/table/call-staff", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ table: tableParam, restaurantID: restaurant?.username, reason }),
+			});
+			const json = await res.json();
+			if (res.ok) {
+				toast.success(json.message || "Staff has been notified!");
+				setCallStaffOpen(false);
+				setCallStaffCooldown(true);
+				setTimeout(() => setCallStaffCooldown(false), 30000);
+			} else {
+				toast.error(json.message || "Failed to call staff.");
+			}
+		} catch {
+			toast.error("Something went wrong. Please try again.");
+		} finally {
+			setCallStaffLoading(false);
+		}
+	};
 
 	useEffect(() => {
 		if (typeof window === "undefined" || !tableData?.isActive || !restaurant?.username || !tableParam) return;
@@ -193,6 +231,57 @@ export default function PageContainer() {
 			)}
 			{tab === "reviews" && <ReviewsPage />}
 			{tab === "contact" && <ContactPage />}
+
+			{/* Call Staff Button – visible on all tabs */}
+			{eligibleToOrder && (
+				<>
+					<button
+						type="button"
+						className={`callStaffFab ${callStaffCooldown ? "cooldown" : ""}`}
+						onClick={() => !callStaffCooldown && setCallStaffOpen(true)}
+						title={callStaffCooldown ? t("Staff notified — please wait") : t("Call Staff")}>
+						<Icon code="f0f3" type="solid" size={20} />
+						{callStaffCooldown && <span className="cooldownDot" />}
+					</button>
+					<Modal open={callStaffOpen} setOpen={setCallStaffOpen} closeIcon="">
+						<div className="callStaffModal">
+							<div className="callStaffHeader">
+								<div className="callStaffIcon">
+									<Icon code="f0f3" type="solid" size={28} />
+								</div>
+								<h2>{t("Call Staff")}</h2>
+								<p>{t("How can we help you?")}</p>
+							</div>
+							<div className="callStaffOptions">
+								<button type="button" className="callOption" onClick={() => handleCallStaff("Order more food")} disabled={callStaffLoading}>
+									<Icon code="e3e3" type="solid" size={22} />
+									<span>{t("Order More")}</span>
+									<small>{t("I'd like to add items")}</small>
+								</button>
+								<button type="button" className="callOption" onClick={() => handleCallStaff("Need assistance")} disabled={callStaffLoading}>
+									<Icon code="f059" type="solid" size={22} />
+									<span>{t("Need Help")}</span>
+									<small>{t("I have a question")}</small>
+								</button>
+								<button type="button" className="callOption" onClick={() => handleCallStaff("Check / Bill please")} disabled={callStaffLoading}>
+									<Icon code="f09d" type="solid" size={22} />
+									<span>{t("Check Please")}</span>
+									<small>{t("Ready to pay")}</small>
+								</button>
+								<button type="button" className="callOption" onClick={() => handleCallStaff("Other request")} disabled={callStaffLoading}>
+									<Icon code="f2a1" type="solid" size={22} />
+									<span>{t("Other")}</span>
+									<small>{t("Something else")}</small>
+								</button>
+							</div>
+							<button type="button" className="callStaffCancel" onClick={() => setCallStaffOpen(false)}>
+								{t("Cancel")}
+							</button>
+						</div>
+					</Modal>
+				</>
+			)}
 		</div>
 	);
 }
+

@@ -1,6 +1,5 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { type SyntheticEvent, type UIEvent, useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { ActionCard, Button, Icon, Spinner } from "xtreme-ui";
 
 import SearchButton from "#components/base/SearchButton";
@@ -44,9 +43,6 @@ const OrderPage = (props: TOrderPageProps) => {
 	const [leftCategoryScroll, setLeftCategoryScroll] = useState(false);
 	const [rightCategoryScroll, setRightCategoryScroll] = useState(true);
 	const [showInfoCard, setShowInfoCard] = useState(false);
-	const [callStaffOpen, setCallStaffOpen] = useState(false);
-	const [callStaffLoading, setCallStaffLoading] = useState(false);
-	const [callStaffCooldown, setCallStaffCooldown] = useState(false);
 
 	const [filteredProducts, setFilteredProducts] = useState<Array<TMenuCustom>>(menus);
 	const [hasImageItems, setHasImageItems] = useState(false);
@@ -56,30 +52,7 @@ const OrderPage = (props: TOrderPageProps) => {
 	const showOrderButton = restaurant?.tables?.some((t) => t.username === table && t.isActive);
 	const eligibleToOrder = showOrderButton && (!session.data || session.data?.role === "customer");
 
-	const handleCallStaff = async (reason: string) => {
-		if (callStaffCooldown) return;
-		setCallStaffLoading(true);
-		try {
-			const res = await fetch("/api/table/call-staff", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ table, restaurantID: restaurant?.username, reason }),
-			});
-			const json = await res.json();
-			if (res.ok) {
-				toast.success(json.message || "Staff has been notified!");
-				setCallStaffOpen(false);
-				setCallStaffCooldown(true);
-				setTimeout(() => setCallStaffCooldown(false), 30000);
-			} else {
-				toast.error(json.message || "Failed to call staff.");
-			}
-		} catch {
-			toast.error("Something went wrong. Please try again.");
-		} finally {
-			setCallStaffLoading(false);
-		}
-	};
+
 
 	const onMenuScroll = (event: UIEvent<HTMLDivElement>) => {
 		const scrollTop = (event.target as HTMLDivElement).scrollTop;
@@ -280,55 +253,7 @@ const OrderPage = (props: TOrderPageProps) => {
 				)}
 			</Modal>
 
-			{/* Call Staff Button */}
-			{eligibleToOrder && (
-				<>
-					<button
-						type="button"
-						className={`callStaffFab ${callStaffCooldown ? "cooldown" : ""}`}
-						onClick={() => !callStaffCooldown && setCallStaffOpen(true)}
-						title={callStaffCooldown ? t("Staff notified — please wait") : t("Call Staff")}>
-						<Icon code="f0f3" type="solid" size={20} />
-						{callStaffCooldown && <span className="cooldownDot" />}
-					</button>
-					<Modal open={callStaffOpen} setOpen={setCallStaffOpen} closeIcon="">
-						<div className="callStaffModal">
-							<div className="callStaffHeader">
-								<div className="callStaffIcon">
-									<Icon code="f0f3" type="solid" size={28} />
-								</div>
-								<h2>{t("Call Staff")}</h2>
-								<p>{t("How can we help you?")}</p>
-							</div>
-							<div className="callStaffOptions">
-								<button type="button" className="callOption" onClick={() => handleCallStaff("Order more food")} disabled={callStaffLoading}>
-									<Icon code="e3e3" type="solid" size={22} />
-									<span>{t("Order More")}</span>
-									<small>{t("I'd like to add items")}</small>
-								</button>
-								<button type="button" className="callOption" onClick={() => handleCallStaff("Need assistance")} disabled={callStaffLoading}>
-									<Icon code="f059" type="solid" size={22} />
-									<span>{t("Need Help")}</span>
-									<small>{t("I have a question")}</small>
-								</button>
-								<button type="button" className="callOption" onClick={() => handleCallStaff("Check / Bill please")} disabled={callStaffLoading}>
-									<Icon code="f09d" type="solid" size={22} />
-									<span>{t("Check Please")}</span>
-									<small>{t("Ready to pay")}</small>
-								</button>
-								<button type="button" className="callOption" onClick={() => handleCallStaff("Other request")} disabled={callStaffLoading}>
-									<Icon code="f2a1" type="solid" size={22} />
-									<span>{t("Other")}</span>
-									<small>{t("Something else")}</small>
-								</button>
-							</div>
-							<button type="button" className="callStaffCancel" onClick={() => setCallStaffOpen(false)}>
-								{t("Cancel")}
-							</button>
-						</div>
-					</Modal>
-				</>
-			)}
+
 		</div>
 	);
 };

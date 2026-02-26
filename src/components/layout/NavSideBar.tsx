@@ -36,15 +36,13 @@ const NavSideBar = (props: TNavSideBar) => {
 	return (
 		<div className="navSideBar">
 			<div className={classList}>
-				{/* Logout shortcut – pinned at top via .head CSS */}
-				{session.status === "authenticated" && (
-					<div className="navItem signoutItem" onClick={() => router.push("/logout")} title="Logout">
-						<div className="navItemContent">
-							<Icon code="f011" size={18} type="solid" />
-							<p>{t("logout")}</p>
-						</div>
+				{/* Logout shortcut – pinned at top via .head CSS, always visible */}
+				<div className="navItem signoutItem" onClick={() => router.push("/logout")} title="Logout">
+					<div className="navItemContent">
+						<Icon code="f011" size={18} type="solid" />
+						<p>{t("logout")}</p>
 					</div>
-				)}
+				</div>
 
 				{navItems.map((item, key) => {
 					if (item.value === "signout" && session.status !== "authenticated") return null;

@@ -10,6 +10,168 @@
 	.pageContainer {
 		flex-grow: 1;
 		overflow: hidden;
+		position: relative;
+	}
+
+	/* Call Staff Floating Action Button – lives in PageContainer */
+	.callStaffFab {
+		position: fixed;
+		bottom: 28px;
+		right: 28px;
+		width: 56px;
+		height: 56px;
+		border-radius: 50%;
+		border: none;
+		background: hsl(var(--colorBrandPrimary));
+		color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		box-shadow: 0 4px 20px hsla(var(--colorBrandPrimary), 0.4);
+		z-index: 10;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		animation: fabPulse 2s infinite;
+
+		&:hover {
+			transform: scale(1.1);
+			box-shadow: 0 6px 28px hsla(var(--colorBrandPrimary), 0.5);
+		}
+
+		&:active {
+			transform: scale(0.95);
+		}
+
+		&.cooldown {
+			background: var(--colorContentSecondary);
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+			animation: none;
+			cursor: not-allowed;
+			opacity: 0.7;
+		}
+
+		.cooldownDot {
+			position: absolute;
+			top: 6px;
+			right: 6px;
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			background: hsl(140, 60%, 50%);
+			border: 2px solid white;
+		}
+
+		i { color: white; }
+	}
+
+	@keyframes fabPulse {
+		0%, 100% { box-shadow: 0 4px 20px hsla(var(--colorBrandPrimary), 0.4); }
+		50% { box-shadow: 0 4px 30px hsla(var(--colorBrandPrimary), 0.6); }
+	}
+
+	/* Call Staff Modal Content */
+	.callStaffModal {
+		padding: 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+
+		.callStaffHeader {
+			text-align: center;
+
+			.callStaffIcon {
+				width: 64px;
+				height: 64px;
+				border-radius: 50%;
+				background: hsla(var(--colorBrandPrimary), 0.1);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin: 0 auto 16px;
+
+				i { color: hsl(var(--colorBrandPrimary)); }
+			}
+
+			h2 {
+				margin: 0 0 6px;
+				font-size: 22px;
+				font-weight: 600;
+			}
+
+			p {
+				margin: 0;
+				font-size: 14px;
+				color: var(--colorContentSecondary);
+			}
+		}
+
+		.callStaffOptions {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px;
+
+			.callOption {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 6px;
+				padding: 20px 12px;
+				border: 1px solid var(--colorBackgroundSecondary);
+				border-radius: 14px;
+				background: var(--colorBackgroundPrimary);
+				cursor: pointer;
+				transition: all 0.2s;
+				font-family: inherit;
+				color: inherit;
+
+				i { color: hsl(var(--colorBrandPrimary)); }
+
+				span {
+					font-size: 14px;
+					font-weight: 600;
+				}
+
+				small {
+					font-size: 11px;
+					color: var(--colorContentSecondary);
+				}
+
+				&:hover {
+					border-color: hsl(var(--colorBrandPrimary));
+					background: hsla(var(--colorBrandPrimary), 0.05);
+					transform: translateY(-2px);
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+				}
+
+				&:active {
+					transform: scale(0.97);
+				}
+
+				&:disabled {
+					opacity: 0.5;
+					pointer-events: none;
+				}
+			}
+		}
+
+		.callStaffCancel {
+			width: 100%;
+			padding: 12px;
+			border: none;
+			border-radius: 12px;
+			background: var(--colorBackgroundSecondary);
+			color: var(--colorContentSecondary);
+			font-size: 14px;
+			font-weight: 500;
+			cursor: pointer;
+			font-family: inherit;
+			transition: background 0.2s;
+
+			&:hover {
+				background: var(--colorBackgroundSecondary);
+				opacity: 0.8;
+			}
+		}
 	}
 }
 
@@ -40,6 +202,12 @@
 		padding-left: 0;
 		display: flex;
 		flex-direction: column-reverse;
+
+		/* Push the FAB above the bottom nav bar so it doesn't overlap */
+		.callStaffFab {
+			bottom: calc(var(--navIconSize) + 16px);
+			right: 20px;
+		}
 	}
 }
 
@@ -54,3 +222,4 @@
 		zoom: 0.7;
 	}
 }
+
