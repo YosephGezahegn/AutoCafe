@@ -25,7 +25,6 @@ export default function PageContainer() {
 
 	useEffect(() => {
 		if (session.status === "unauthenticated") queryParams.router.replace("/");
-		if (session?.data?.role === "superadmin") queryParams.router.replace("/superadmin");
 	}, [queryParams.router, session]);
 
 	return (

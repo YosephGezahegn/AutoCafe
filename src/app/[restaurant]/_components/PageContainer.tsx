@@ -99,9 +99,74 @@ export default function PageContainer() {
 						height: "100%",
 						padding: "20px",
 						textAlign: "center",
+						gap: "16px",
 					}}>
-					<h2>{t("Table is locked")}</h2>
-					<p>{t("Please request staff to activate this table to start ordering.")}</p>
+					<div
+						style={{
+							width: "120px",
+							height: "120px",
+							borderRadius: "50%",
+							background: "var(--themeP)",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							marginBottom: "8px",
+							position: "relative",
+						}}>
+						<span
+							style={{
+								fontSize: "48px",
+								fontWeight: 800,
+								color: "var(--themeC)",
+								lineHeight: 1,
+							}}>
+							{tableData.name}
+						</span>
+						<div
+							style={{
+								position: "absolute",
+								bottom: "-4px",
+								right: "-4px",
+								width: "36px",
+								height: "36px",
+								borderRadius: "50%",
+								background: "var(--themeS)",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								border: "3px solid var(--bg1)",
+								fontSize: "16px",
+							}}>
+							🔒
+						</div>
+					</div>
+					<h2 style={{ margin: 0, fontSize: "20px" }}>{t("Table is locked")}</h2>
+					<p style={{ margin: 0, opacity: 0.7, fontSize: "14px", maxWidth: "280px" }}>
+						{t("Please request staff to activate this table to start ordering.")}
+					</p>
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							gap: "8px",
+							marginTop: "8px",
+							padding: "8px 16px",
+							borderRadius: "20px",
+							background: "var(--themeP)",
+							fontSize: "13px",
+							opacity: 0.8,
+						}}>
+						<span
+							style={{
+								width: "8px",
+								height: "8px",
+								borderRadius: "50%",
+								background: "#f59e0b",
+								animation: "pulse 1.5s ease-in-out infinite",
+							}}
+						/>
+						{t("Waiting for activation...")}
+					</div>
 				</div>
 			</div>
 		);

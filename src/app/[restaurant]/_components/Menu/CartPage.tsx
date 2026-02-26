@@ -146,13 +146,7 @@ const CartPage = (props: TCartPageProps) => {
 						<Button
 							iconType="solid"
 							size="mini"
-							label={
-								bottomBarActive
-									? t("close")
-									: props.selectedProducts.length > 0
-										? `${selectionTotal} "Br" | ${t("Finish Ordering")}`
-										: t("Proceed to Pay")
-							}
+							label={bottomBarActive ? t("close") : props.selectedProducts.length > 0 ? `${selectionTotal} Birr | ${t("Finish Ordering")}` : t("Proceed to Pay")}
 							loading={placingOrder}
 							onClick={onOrderAction}
 						/>

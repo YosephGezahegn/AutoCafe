@@ -14,7 +14,7 @@ const RestaurantDefault: TRestaurantInitialType = {
 export const RestaurantContext = createContext(RestaurantDefault);
 export const RestaurantProvider = ({ children }: TRestaurantProviderProps) => {
 	const pathname = usePathname();
-	const { data: restaurant, error, isLoading } = useSWR(`/api/menu?id=${pathname.replace("/", "")}`, fetcher);
+	const { data: restaurant, error, isLoading } = useSWR(`/api/menu?id=${pathname.replace("/", "")}`, fetcher, { refreshInterval: 3000 });
 
 	return <RestaurantContext.Provider value={{ restaurant, error, loading: isLoading }}>{children}</RestaurantContext.Provider>;
 };

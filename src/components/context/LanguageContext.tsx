@@ -71,6 +71,7 @@ const translations: Record<string, Record<Language, string>> = {
 		am: "ትዕዛዝ ለመጀመር እባክዎ አስተናጋጁን ይጠይቁ።",
 	},
 	"Table is locked": { en: "Table is locked", am: "ጠረጴዛው ተቆልፏል" },
+	"Waiting for activation...": { en: "Waiting for activation...", am: "ማግበር በመጠበቅ ላይ..." },
 };
 
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
