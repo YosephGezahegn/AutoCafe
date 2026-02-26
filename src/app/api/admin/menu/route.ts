@@ -50,7 +50,7 @@ function parseMenuData(formData: FormData) {
 export async function POST(req: Request) {
 	try {
 		const session = await getServerSession(authOptions);
-		if (session?.role !== "admin") return NextResponse.json({ status: 401, message: "Unauthorized" }, { status: 401 });
+		if (session?.role !== "admin" && session?.role !== "superadmin") return NextResponse.json({ status: 401, message: "Unauthorized" }, { status: 401 });
 
 		await connectDB();
 		const formData = await req.formData();
@@ -80,7 +80,7 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
 	try {
 		const session = await getServerSession(authOptions);
-		if (session?.role !== "admin") return NextResponse.json({ status: 401, message: "Unauthorized" }, { status: 401 });
+		if (session?.role !== "admin" && session?.role !== "superadmin") return NextResponse.json({ status: 401, message: "Unauthorized" }, { status: 401 });
 
 		await connectDB();
 		const formData = await req.formData();
@@ -108,7 +108,7 @@ export async function PUT(req: Request) {
 export async function DELETE(req: Request) {
 	try {
 		const session = await getServerSession(authOptions);
-		if (session?.role !== "admin") return NextResponse.json({ status: 401, message: "Unauthorized" }, { status: 401 });
+		if (session?.role !== "admin" && session?.role !== "superadmin") return NextResponse.json({ status: 401, message: "Unauthorized" }, { status: 401 });
 
 		await connectDB();
 		const { searchParams } = new URL(req.url);

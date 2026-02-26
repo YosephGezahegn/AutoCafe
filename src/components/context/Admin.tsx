@@ -35,8 +35,10 @@ export const AdminProvider = ({ children }: TAdminProviderProps) => {
 	const params = useSearchParams();
 	const _tab = params.get("tab");
 	const _subTab = params.get("subTab");
-	const { data: { profile, menus = [], tables = [] } = {}, isLoading: profileLoading, mutate: profileMutate } = useSWR("/api/admin", fetcher);
-	const { data: fetchResult, isLoading: orderLoading, mutate } = useSWR("/api/admin/order", fetcher, { refreshInterval: 5000 });
+	const restaurantOverride = params.get("restaurant");
+	const adminApiSuffix = restaurantOverride ? `?restaurant=${restaurantOverride}` : "";
+	const { data: { profile, menus = [], tables = [] } = {}, isLoading: profileLoading, mutate: profileMutate } = useSWR(`/api/admin${adminApiSuffix}`, fetcher);
+	const { data: fetchResult, isLoading: orderLoading, mutate } = useSWR(`/api/admin/order${adminApiSuffix}`, fetcher, { refreshInterval: 5000 });
 	const orderData = fetchResult?.orders || [];
 	const staffCalls = fetchResult?.staffCalls || [];
 	const sessions = fetchResult?.sessions || [];

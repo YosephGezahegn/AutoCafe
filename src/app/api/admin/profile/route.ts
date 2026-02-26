@@ -11,7 +11,7 @@ export async function PUT(req: Request) {
 		await connectDB();
 		const session = await getServerSession(authOptions);
 		if (!session) throw { status: 401, message: "Authentication Required" };
-		if (session.role !== "admin") throw { status: 403, message: "Admin Required" };
+		if (session.role !== "admin" && session.role !== "superadmin") throw { status: 403, message: "Admin Required" };
 
 		const body = await req.json();
 		const profile = await Profiles.findOne<TProfile>({ restaurantID: session?.username });

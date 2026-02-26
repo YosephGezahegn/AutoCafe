@@ -152,15 +152,191 @@
 		}
 	}
 
-	.reviewsList {
+	/* Filter Section */
+	.filterSection {
 		display: flex;
 		flex-direction: column;
 		gap: 12px;
 
-		h3 {
-			font-size: 16px;
-			font-weight: 600;
+		.filterHeader {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			h3 {
+				font-size: 16px;
+				font-weight: 600;
+			}
+
+			.filterActions {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+			}
+
+			.clearFilterBtn {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				padding: 6px 12px;
+				border: none;
+				border-radius: 8px;
+				background: hsl(0, 70%, 94%);
+				color: hsl(0, 70%, 45%);
+				font-size: 12px;
+				font-weight: 500;
+				cursor: pointer;
+				transition: all 0.15s;
+
+				&:hover {
+					background: hsl(0, 70%, 88%);
+				}
+			}
+
+			.toggleFilterBtn {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				padding: 8px 14px;
+				border: 1px solid var(--colorBackgroundSecondary);
+				border-radius: 10px;
+				background: var(--colorBackgroundPrimary);
+				color: var(--colorContentPrimary);
+				font-size: 13px;
+				font-weight: 500;
+				cursor: pointer;
+				transition: all 0.15s;
+				position: relative;
+
+				&:hover {
+					border-color: hsl(var(--colorBrandPrimary));
+				}
+
+				&.active {
+					background: hsl(var(--colorBrandPrimary) / 0.08);
+					border-color: hsl(var(--colorBrandPrimary));
+					color: hsl(var(--colorBrandPrimary));
+				}
+
+				.filterBadge {
+					position: absolute;
+					top: -3px;
+					right: -3px;
+					width: 8px;
+					height: 8px;
+					border-radius: 50%;
+					background: hsl(var(--colorBrandPrimary));
+				}
+			}
 		}
+
+		.filterControls {
+			display: flex;
+			gap: 20px;
+			padding: 16px 20px;
+			background: var(--colorBackgroundPrimary);
+			border: 1px solid var(--colorBackgroundSecondary);
+			border-radius: 12px;
+			animation: filterSlideIn 0.2s ease-out;
+			flex-wrap: wrap;
+
+			.filterGroup {
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+				flex: 1;
+				min-width: 200px;
+
+				label {
+					display: flex;
+					align-items: center;
+					gap: 6px;
+					font-size: 12px;
+					font-weight: 600;
+					color: var(--colorContentSecondary);
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
+
+					i {
+						color: hsl(var(--colorBrandPrimary));
+					}
+				}
+
+				.dateRange {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+
+					input[type="date"] {
+						flex: 1;
+						padding: 8px 12px;
+						border: 1px solid var(--colorBackgroundSecondary);
+						border-radius: 8px;
+						background: var(--colorBackgroundSecondary);
+						color: var(--colorContentPrimary);
+						font-size: 13px;
+						font-family: inherit;
+						outline: none;
+						transition: border-color 0.15s;
+
+						&:focus {
+							border-color: hsl(var(--colorBrandPrimary));
+						}
+					}
+
+					.dateSep {
+						font-size: 12px;
+						color: var(--colorContentSecondary);
+						font-weight: 500;
+					}
+				}
+
+				.ratingFilterChips {
+					display: flex;
+					gap: 6px;
+					flex-wrap: wrap;
+
+					.ratingChip {
+						display: flex;
+						align-items: center;
+						gap: 4px;
+						padding: 6px 12px;
+						border: 1px solid var(--colorBackgroundSecondary);
+						border-radius: 20px;
+						background: var(--colorBackgroundSecondary);
+						color: var(--colorContentPrimary);
+						font-size: 13px;
+						font-weight: 500;
+						cursor: pointer;
+						transition: all 0.15s;
+
+						i {
+							color: hsl(40, 100%, 55%);
+						}
+
+						&:hover {
+							border-color: hsl(var(--colorBrandPrimary));
+						}
+
+						&.active {
+							background: hsl(var(--colorBrandPrimary));
+							border-color: hsl(var(--colorBrandPrimary));
+							color: white;
+
+							i {
+								color: white;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.reviewsList {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
 
 		.emptyReviews {
 			display: flex;
@@ -235,6 +411,17 @@
 	}
 }
 
+@keyframes filterSlideIn {
+	from {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 @media (width <= 900px) {
 	.adminReviews .statsRow {
 		grid-template-columns: repeat(2, 1fr);
@@ -242,7 +429,17 @@
 }
 
 @media (width <= 500px) {
-	.adminReviews .statsRow {
-		grid-template-columns: 1fr;
+	.adminReviews {
+		.statsRow {
+			grid-template-columns: 1fr;
+		}
+
+		.filterSection .filterControls {
+			flex-direction: column;
+
+			.filterGroup {
+				min-width: unset;
+			}
+		}
 	}
 }

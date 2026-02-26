@@ -478,8 +478,11 @@ export default function SuperAdminPage() {
 												<td>{account.tables?.length ?? 0}</td>
 												<td>
 													<div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-														<a href={`/${account.username}`} target="_blank" rel="noreferrer">
-															<Button label="View" type="secondary" icon="f35d" iconType="solid" />
+														<a href={`/${account.username}?tab=menu`} target="_blank" rel="noreferrer">
+															<Button label="Customer View" type="secondary" icon="f35d" iconType="solid" />
+														</a>
+														<a href={`/dashboard?tab=orders&restaurant=${account.username}`} target="_blank" rel="noreferrer">
+															<Button label="Admin" type="primary" icon="e533" iconType="solid" />
 														</a>
 														<Button
 															label={account.accountActive ? "Deactivate" : "Activate"}
@@ -827,8 +830,11 @@ export default function SuperAdminPage() {
 											</div>
 										</div>
 										<div className="cardActions">
-											<a href={`/${account.username}`} target="_blank" rel="noreferrer">
-												<Button label="View Menu" type="secondary" icon="f35d" iconType="solid" />
+											<a href={`/${account.username}?tab=menu`} target="_blank" rel="noreferrer">
+												<Button label="Customer View" type="secondary" icon="f35d" iconType="solid" />
+											</a>
+											<a href={`/dashboard?tab=orders&restaurant=${account.username}`} target="_blank" rel="noreferrer">
+												<Button label="Admin" type="primary" icon="e533" iconType="solid" />
 											</a>
 											<Button
 												label={account.accountActive ? "Deactivate" : "Activate"}

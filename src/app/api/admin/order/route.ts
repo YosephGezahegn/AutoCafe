@@ -11,13 +11,22 @@ import { TableSessions } from "#utils/database/models/tablesession";
 import { authOptions } from "#utils/helper/authHelper";
 import { CatchNextResponse } from "#utils/helper/common";
 
-export async function GET() {
+export async function GET(req: Request) {
 	try {
 		await connectDB();
 		const session = await getServerSession(authOptions);
 		if (!session) throw { status: 401, message: "Authentication Required" };
 
-		const restaurantID = session?.username;
+		const url = new URL(req.url);
+		const restaurantOverride = url.searchParams.get("restaurant");
+		let restaurantID = session?.username;
+
+		if (session?.role === "superadmin" && restaurantOverride) {
+			restaurantID = restaurantOverride;
+		} else if (session?.role !== "admin" && session?.role !== "superadmin") {
+			throw { status: 403, message: "Admin access required" };
+		}
+
 		const orders =
 			((await Orders.find({ restaurantID })
 				.populate<{ customer: TCustomer }>("customer")

@@ -9,7 +9,7 @@ import { CatchNextResponse } from "#utils/helper/common";
 export async function POST(req: Request) {
 	try {
 		const session = await getServerSession(authOptions);
-		if (session?.role !== "admin") return NextResponse.json({ status: 401, message: "Unauthorized" }, { status: 401 });
+		if (session?.role !== "admin" && session?.role !== "superadmin") return NextResponse.json({ status: 401, message: "Unauthorized" }, { status: 401 });
 
 		await connectDB();
 		const body = await req.json();

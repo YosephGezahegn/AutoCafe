@@ -11,7 +11,7 @@ import { authOptions } from "#utils/helper/authHelper";
 export async function POST(req: Request) {
 	try {
 		const session = await getServerSession(authOptions);
-		if (session?.role !== "admin") return NextResponse.json({ status: 401, message: "Unauthorized" });
+		if (session?.role !== "admin" && session?.role !== "superadmin") return NextResponse.json({ status: 401, message: "Unauthorized" });
 
 		await connectDB();
 		const body = await req.json();
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
 	try {
 		const session = await getServerSession(authOptions);
-		if (session?.role !== "admin") return NextResponse.json({ status: 401, message: "Unauthorized" });
+		if (session?.role !== "admin" && session?.role !== "superadmin") return NextResponse.json({ status: 401, message: "Unauthorized" });
 
 		await connectDB();
 		const body = await req.json();
@@ -84,7 +84,7 @@ export async function PUT(req: Request) {
 export async function DELETE(req: Request) {
 	try {
 		const session = await getServerSession(authOptions);
-		if (session?.role !== "admin") return NextResponse.json({ status: 401, message: "Unauthorized" });
+		if (session?.role !== "admin" && session?.role !== "superadmin") return NextResponse.json({ status: 401, message: "Unauthorized" });
 
 		await connectDB();
 		const { searchParams } = new URL(req.url);
