@@ -20,7 +20,7 @@ const profile = {
 	avatar: "https://goldengatehotelhawassa.com/wp-content/uploads/2021/04/GG-Logo.png",
 	cover: "https://goldengatehotelhawassa.com/wp-content/uploads/2021/04/slider2.jpg",
 	photos: [],
-	categories: ["Main Course", "Vegetarian", "Beverages"],
+	categories: ["Ethiopian Specials", "Vegetarian", "Main Course", "Pasta & Pizza", "Burgers & Sandwiches", "Starters & Sides", "Desserts", "Beverages"],
 };
 
 const tables = Array.from({ length: 5 }, (_, i) => ({
