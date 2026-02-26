@@ -156,6 +156,12 @@
 		.menu {
 			flex-direction: row;
 			align-items: center;
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: none;
+			&::-webkit-scrollbar {
+				display: none;
+			}
 
 			body.chat-open & {
 				display: none;
@@ -163,7 +169,14 @@
 
 			&.head {
 				.navItem:first-child {
-					display: none;
+					/* Show logout on mobile too */
+					display: flex;
+					position: relative;
+					top: auto;
+
+					i {
+						color: hsl(var(--colorDanger, 0 78% 52%));
+					}
 				}
 			}
 

@@ -91,6 +91,12 @@ export default function PageContainer() {
 			localStorage.setItem(`table_session_${tableParam}`, sid);
 		}
 
+		// Save current table info for logout flow (handles both authenticated and anonymous)
+		localStorage.setItem(
+			"lastTableData",
+			JSON.stringify({ restaurant: restaurant.username, table: tableParam }),
+		);
+
 		fetch("/api/table/claim", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },

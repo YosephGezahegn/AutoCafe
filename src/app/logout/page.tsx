@@ -40,13 +40,42 @@ export default function Logout() {
 				signOut();
 			}
 		} else if (session?.status === "unauthenticated") {
-			try {
-				const { role, restaurant, table } = JSON.parse(localStorage.getItem("logoutData") ?? "");
+			const finishLogout = (role?: string, restaurant?: string, table?: string) => {
 				localStorage.removeItem("logoutData");
+				localStorage.removeItem("lastTableData");
 
 				if (role === "admin" || role === "superadmin") router.push("/");
-				else if (role === "customer") router.push(`/${restaurant}?table=${table}`);
+				else if (restaurant && table) router.push(`/${restaurant}?table=${table}`);
 				else router.push("/");
+			};
+
+			try {
+				const logoutDataStr = localStorage.getItem("logoutData");
+				const lastTableDataStr = localStorage.getItem("lastTableData");
+
+				const logoutData = logoutDataStr ? JSON.parse(logoutDataStr) : null;
+				const lastTableData = lastTableDataStr ? JSON.parse(lastTableDataStr) : null;
+
+				const role = logoutData?.role;
+				const restaurant = logoutData?.restaurant ?? lastTableData?.restaurant;
+				const table = logoutData?.table ?? lastTableData?.table;
+
+				// If we have table info and haven't locked it yet, lock it now
+				if (restaurant && table && !lockCalled.current) {
+					lockCalled.current = true;
+					fetch("/api/table/lock", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ table, restaurantID: restaurant }),
+					})
+						.catch(() => {})
+						.finally(() => {
+							localStorage.removeItem(`table_session_${table}`);
+							finishLogout(role, restaurant, table);
+						});
+				} else {
+					finishLogout(role, restaurant, table);
+				}
 			} catch (err) {
 				console.log(err);
 				router.push("/");
